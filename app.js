@@ -1,37 +1,38 @@
-import { MongoClient } from "mongodb";
-import { orders } from "./orders.js";
+import { MongoClient } from 'mongodb'
+import { orders } from './orders.js'
 
-const connectionString = "mongodb://127.0.0.1:27017";
+const connectionString =
+  'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.0'
 
-console.log("------- Start connecting to MongDB -------");
+console.log('------- Start connecting to MongDB -------')
 export const client = new MongoClient(connectionString, {
   useUnifiedTopology: true,
-});
+})
 
-await client.connect();
-console.log("------- Connecting to MongoDB Successfully -------");
+await client.connect()
+console.log('------- Connecting to MongoDB Successfully -------')
 
-const db = await client.db("practice-mongo");
-console.log("------- Create database successfully -------");
+export const db = await client.db('practice-mongo')
+console.log('------- Create database successfully -------')
 
 try {
-  await db.createCollection("pizzaOrders");
-  console.log("------- Create collection successfully -------");
+  await db.createCollection('pizzaOrders')
+  console.log('------- Create collection successfully -------')
 } catch {
-  console.log("Collection already exists !");
+  console.log('Collection already exists !')
 }
 
-const collection = db.collection("pizzaOrders");
+export const collection = db.collection('pizzaOrders')
 
 await collection.insertMany(
-  orders.map((order) => {
+  orders.map(order => {
     return {
       ...order,
       created_at: new Date(order.created_at),
-    };
+    }
   })
-);
+)
 
-console.log("------- Insert documents successfully -------");
+console.log('------- Insert documents successfully -------')
 
-await client.close();
+await client.close()
